@@ -11,8 +11,8 @@ const A = import.meta.env.BASE_URL; // base do GitHub Pages
 const SUPA_URL = 'https://rriyytswnfkorjiwownw.supabase.co';
 const SUPA_KEY = 'sb_publishable_Az9_SLbQ2pTjNvEKe4Tfzg_GI6terPQ';
 
-// Estreia: 11 de outubro de 2026, 16h (horário de Brasília)
-const ALVO = new Date('2026-10-11T16:00:00-03:00').getTime();
+// Estreia: 11 de agosto de 2026, 16h (horário de Brasília)
+const ALVO = new Date('2026-08-11T16:00:00-03:00').getTime();
 
 function Logo({ className }) {
   return <img className={'logo-img ' + (className || '')} src={A + 'img/logo.png'} alt="LivingPet" />;
@@ -46,14 +46,15 @@ function Countdown() {
   );
 }
 
-function Waitlist() {
+function Waitlist({ abrirPrivacidade }) {
   const [form, setForm] = useState({ nome: '', telefone: '', email: '' });
+  const [aceito, setAceito] = useState(false);
   const [estado, setEstado] = useState('idle'); // idle | enviando | ok | erro
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
   async function enviar(e) {
     e.preventDefault();
-    if (!form.nome || !form.telefone || !form.email) return;
+    if (!form.nome || !form.telefone || !form.email || !aceito) return;
     setEstado('enviando');
     try {
       const res = await fetch(`${SUPA_URL}/rest/v1/waitlist`, {
@@ -77,7 +78,7 @@ function Waitlist() {
       <div className="wait-sucesso">
         <div className="big"><IconCheck width={30} height={30} /></div>
         <h3>Você está na lista!</h3>
-        <p>No dia 11 de outubro você recebe o acesso fundador por e-mail. Fique de olho na caixa de entrada.</p>
+        <p>No dia 11 de agosto você recebe o acesso fundador por e-mail. Fique de olho na caixa de entrada.</p>
       </div>
     );
   }
@@ -96,20 +97,117 @@ function Waitlist() {
         <label htmlFor="email">E-mail</label>
         <input id="email" type="email" autoComplete="email" placeholder="voce@email.com" value={form.email} onChange={set('email')} required />
       </div>
-      <button className="btn btn-primary btn-bloco" type="submit" disabled={estado === 'enviando'}>
+
+      {/* Consentimento LGPD (obrigatório, desmarcado por padrão) */}
+      <label className="consent">
+        <input type="checkbox" checked={aceito} onChange={(e) => setAceito(e.target.checked)} required />
+        <span>
+          Autorizo o LivingPet a usar meu nome, telefone e e-mail para me enviar o acesso fundador
+          e novidades do lançamento, conforme a{' '}
+          <button type="button" className="link-inline" onClick={abrirPrivacidade}>Política de Privacidade</button>.
+        </span>
+      </label>
+
+      <button className="btn btn-primary btn-bloco" type="submit" disabled={estado === 'enviando' || !aceito}>
         {estado === 'enviando' ? 'Enviando...' : 'Quero o acesso fundador'}
       </button>
       {estado === 'erro' && <p className="form-msg form-erro">Não deu para enviar agora. Tente novamente em instantes.</p>}
       <p className="form-msg" style={{ color: 'var(--tinta-2)', fontWeight: 600 }}>
-        Sem spam. Usamos seus dados apenas para liberar o acesso fundador.
+        Sem spam. Você pode revogar o consentimento e pedir a exclusão dos seus dados quando quiser.
       </p>
     </form>
   );
 }
 
+// Modal com a Política de Privacidade (LGPD).
+function Privacidade({ onFechar }) {
+  return (
+    <div className="modal-fundo" onClick={onFechar} role="dialog" aria-modal="true" aria-label="Política de Privacidade">
+      <div className="modal glass" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-topo">
+          <h2>Política de Privacidade</h2>
+          <button className="modal-x" onClick={onFechar} aria-label="Fechar">×</button>
+        </div>
+        <div className="modal-corpo">
+          <p className="pol-data">Vigência: agosto de 2026. Última atualização: 6 de agosto de 2026.</p>
+
+          <h3>1. Quem somos (Controlador)</h3>
+          <p>
+            O LivingPet é um aplicativo de rotina e cuidado de pets, operado pela Bro Growth.
+            Somos o controlador dos dados coletados neste site. Contato do encarregado de dados:
+            <a href="mailto:contato.bromkt@gmail.com"> contato.bromkt@gmail.com</a>.
+          </p>
+
+          <h3>2. Quais dados coletamos</h3>
+          <p>
+            Neste site coletamos apenas os dados que você informa voluntariamente na lista de espera:
+            <b> nome, telefone e e-mail</b>. Não usamos cookies de rastreamento, não fazemos perfilamento
+            e não coletamos dados de forma automática além do necessário para o funcionamento da página.
+          </p>
+
+          <h3>3. Para que usamos</h3>
+          <p>
+            Usamos seus dados exclusivamente para liberar o acesso fundador no lançamento (11 de agosto de 2026)
+            e enviar comunicações sobre o LivingPet. A base legal é o seu <b>consentimento</b>
+            (art. 7, I, da Lei nº 13.709/2018, a LGPD).
+          </p>
+
+          <h3>4. Compartilhamento</h3>
+          <p>
+            Não vendemos nem compartilhamos seus dados com terceiros para fins de marketing. Os dados são
+            armazenados de forma segura na infraestrutura do Supabase, usada apenas como operadora para
+            hospedagem do banco de dados.
+          </p>
+
+          <h3>5. Por quanto tempo guardamos</h3>
+          <p>
+            Mantemos seus dados até o cumprimento da finalidade (envio do acesso e comunicações do lançamento)
+            ou até você solicitar a exclusão ou revogar o consentimento, o que ocorrer primeiro.
+          </p>
+
+          <h3>6. Seus direitos (LGPD)</h3>
+          <p>Você pode, a qualquer momento e gratuitamente:</p>
+          <ul>
+            <li>confirmar a existência e acessar seus dados;</li>
+            <li>corrigir dados incompletos ou desatualizados;</li>
+            <li>solicitar a exclusão dos seus dados;</li>
+            <li>solicitar a portabilidade;</li>
+            <li>revogar o consentimento;</li>
+            <li>apresentar reclamação à ANPD (Autoridade Nacional de Proteção de Dados).</li>
+          </ul>
+          <p>
+            Para exercer qualquer direito, escreva para
+            <a href="mailto:contato.bromkt@gmail.com"> contato.bromkt@gmail.com</a>. Respondemos no menor prazo possível.
+          </p>
+
+          <h3>7. Segurança</h3>
+          <p>
+            Adotamos medidas técnicas para proteger seus dados contra acesso não autorizado, incluindo
+            controle de acesso no banco de dados. Ainda assim, nenhum sistema é 100% infalível, e nos
+            comprometemos a comunicar incidentes relevantes conforme a lei.
+          </p>
+
+          <h3>8. Menores de idade</h3>
+          <p>Este site não se destina à coleta de dados de menores de idade sem o consentimento dos responsáveis.</p>
+
+          <h3>9. Alterações</h3>
+          <p>
+            Podemos atualizar esta política. Mudanças relevantes serão comunicadas nesta página, com nova data de vigência.
+          </p>
+        </div>
+        <div className="modal-rodape">
+          <button className="btn btn-primary" onClick={onFechar}>Entendi</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
+  const [priv, setPriv] = useState(false);
   return (
     <>
+      {priv && <Privacidade onFechar={() => setPriv(false)} />}
       {/* ===== Header ===== */}
       <header className="header">
         <div className="container header-in">
@@ -129,7 +227,7 @@ export default function App() {
         <video className="hero-video" src={A + 'img/comercial.webm'} autoPlay muted loop playsInline />
         <div className="hero-scrim" />
         <div className="container hero-in">
-          <span className="selo">Estreia 11 de outubro · Acesso fundador</span>
+          <span className="selo">Estreia 11 de agosto · Acesso fundador</span>
           <h1>Tudo para a <span className="grifo">rotina</span> e a saúde do seu pet, todo dia</h1>
           <p className="lead">
             Rotina diária personalizada por IA, carteira de vacinação, foto do dia e compartilhamento
@@ -140,7 +238,7 @@ export default function App() {
             <a className="btn btn-glass" href="#app">Ver o app</a>
           </div>
           <Countdown />
-          <p className="hero-data">Lançamento em 11 de outubro de 2026, às 16h.</p>
+          <p className="hero-data">Lançamento em 11 de agosto de 2026, às 16h.</p>
         </div>
       </section>
 
@@ -257,7 +355,7 @@ export default function App() {
               <span className="eyebrow">Acesso fundador</span>
               <h2>Entre na lista e estreie com a gente</h2>
               <p className="sub">
-                No lançamento, dia 11 de outubro, quem está na lista recebe o acesso fundador
+                No lançamento, dia 11 de agosto, quem está na lista recebe o acesso fundador
                 do LivingPet em primeira mão.
               </p>
               <ul className="wait-beneficios">
@@ -266,7 +364,7 @@ export default function App() {
                 <li><span className="ck"><IconCheck width={16} height={16} /></span> Prioridade no suporte e nas novidades</li>
               </ul>
             </div>
-            <Waitlist />
+            <Waitlist abrirPrivacidade={() => setPriv(true)} />
           </div>
         </div>
       </section>
@@ -292,7 +390,7 @@ export default function App() {
               <ul>
                 <li><a href="#lista">Lista de espera</a></li>
                 <li><a href="mailto:contato.bromkt@gmail.com">Fale conosco</a></li>
-                <li><a href="#lista">Privacidade (LGPD)</a></li>
+                <li><button type="button" className="link-footer" onClick={() => setPriv(true)}>Privacidade (LGPD)</button></li>
               </ul>
             </div>
             <div>

@@ -269,6 +269,29 @@ img { max-width: 100%; display: block; }
 .form-msg { font-size: 14px; font-weight: 700; margin-top: 4px; }
 .form-ok { color: var(--verde-esc); }
 .form-erro { color: #c0392b; }
+/* consentimento LGPD */
+.consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--tinta-2); line-height: 1.45; cursor: pointer; }
+.consent input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--verde); flex-shrink: 0; cursor: pointer; }
+.link-inline { background: none; border: 0; padding: 0; color: var(--verde-esc); font-weight: 800; text-decoration: underline; cursor: pointer; font-size: inherit; font-family: inherit; }
+.link-footer { background: none; border: 0; padding: 0; color: #a7c4b5; font-size: 14px; cursor: pointer; font-family: inherit; text-align: left; }
+.link-footer:hover { color: var(--verde-claro); }
+
+/* modal política de privacidade */
+.modal-fundo { position: fixed; inset: 0; z-index: 200; background: rgba(7,26,20,.55); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.modal { width: 100%; max-width: 680px; max-height: 86vh; display: flex; flex-direction: column; background: var(--glass-forte); }
+.modal-topo { display: flex; align-items: center; justify-content: space-between; padding: 22px 26px; border-bottom: 1px solid rgba(16,35,27,.1); }
+.modal-topo h2 { font-size: 22px; font-weight: 800; }
+.modal-x { background: rgba(16,35,27,.06); border: 0; width: 38px; height: 38px; border-radius: 50%; font-size: 24px; line-height: 1; color: var(--tinta); cursor: pointer; }
+.modal-x:hover { background: rgba(16,35,27,.12); }
+.modal-corpo { padding: 22px 26px; overflow-y: auto; }
+.modal-corpo h3 { font-size: 16px; font-weight: 800; color: var(--verde-esc); margin: 20px 0 6px; }
+.modal-corpo p { color: var(--tinta); font-size: 14.5px; margin-bottom: 6px; }
+.modal-corpo a { color: var(--verde-esc); font-weight: 700; text-decoration: underline; }
+.modal-corpo ul { margin: 6px 0; padding-left: 22px; color: var(--tinta); font-size: 14.5px; }
+.modal-corpo li { margin-bottom: 4px; }
+.pol-data { color: var(--tinta-2); font-size: 13px; font-style: italic; }
+.modal-rodape { padding: 18px 26px; border-top: 1px solid rgba(16,35,27,.1); text-align: right; }
+
 .wait-sucesso { text-align: center; padding: 20px; }
 .wait-sucesso .big { width: 64px; height: 64px; border-radius: 50%; background: var(--verde); color: #fff; display: grid; place-items: center; margin: 0 auto 14px; }
 .wait-sucesso h3 { font-size: 22px; font-weight: 800; }
