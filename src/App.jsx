@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   IconSparkle, IconSyringe, IconCamera, IconShare, IconShield, IconBell,
   IconClock, IconHeart, IconMap, IconCheck,
@@ -7,116 +7,8 @@ import { PhoneMenu, PhoneAtividades, PhoneFicha } from './components/Phones.jsx'
 
 const A = import.meta.env.BASE_URL; // base do GitHub Pages
 
-// Supabase (chave publishable, pública por design; protegida por RLS)
-const SUPA_URL = 'https://rriyytswnfkorjiwownw.supabase.co';
-const SUPA_KEY = 'sb_publishable_Az9_SLbQ2pTjNvEKe4Tfzg_GI6terPQ';
-
-// Estreia: 11 de agosto de 2026, 16h (horário de Brasília)
-const ALVO = new Date('2026-08-11T16:00:00-03:00').getTime();
-
 function Logo({ className }) {
   return <img className={'logo-img ' + (className || '')} src={A + 'img/logo.png'} alt="LivingPet" />;
-}
-
-function Countdown() {
-  const [t, setT] = useState(ALVO - Date.now());
-  useEffect(() => {
-    const id = setInterval(() => setT(ALVO - Date.now()), 1000);
-    return () => clearInterval(id);
-  }, []);
-  const s = Math.max(0, Math.floor(t / 1000));
-  const dias = Math.floor(s / 86400);
-  const horas = Math.floor((s % 86400) / 3600);
-  const min = Math.floor((s % 3600) / 60);
-  const seg = s % 60;
-  const pad = (n) => String(n).padStart(2, '0');
-  const blocos = [[dias, 'Dias'], [horas, 'Horas'], [min, 'Min'], [seg, 'Seg']];
-  return (
-    <div className="countdown" aria-label="Contagem regressiva para o lançamento">
-      {blocos.map(([v, l], i) => (
-        <div key={l} style={{ display: 'flex' }}>
-          <div className="cd-box glass-dark">
-            <div className="cd-num">{pad(v)}</div>
-            <div className="cd-lbl">{l}</div>
-          </div>
-          {i < 3 && <div className="cd-sep">:</div>}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function Waitlist({ abrirPrivacidade }) {
-  const [form, setForm] = useState({ nome: '', telefone: '', email: '' });
-  const [aceito, setAceito] = useState(false);
-  const [estado, setEstado] = useState('idle'); // idle | enviando | ok | erro
-  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
-
-  async function enviar(e) {
-    e.preventDefault();
-    if (!form.nome || !form.telefone || !form.email || !aceito) return;
-    setEstado('enviando');
-    try {
-      const res = await fetch(`${SUPA_URL}/rest/v1/waitlist`, {
-        method: 'POST',
-        headers: {
-          apikey: SUPA_KEY,
-          Authorization: `Bearer ${SUPA_KEY}`,
-          'Content-Type': 'application/json',
-          Prefer: 'return=minimal',
-        },
-        body: JSON.stringify(form),
-      });
-      setEstado(res.ok ? 'ok' : 'erro');
-    } catch {
-      setEstado('erro');
-    }
-  }
-
-  if (estado === 'ok') {
-    return (
-      <div className="wait-sucesso">
-        <div className="big"><IconCheck width={30} height={30} /></div>
-        <h3>Você está na lista!</h3>
-        <p>No dia 11 de agosto você recebe o acesso fundador por e-mail. Fique de olho na caixa de entrada.</p>
-      </div>
-    );
-  }
-
-  return (
-    <form className="form" onSubmit={enviar}>
-      <div className="campo">
-        <label htmlFor="nome">Nome</label>
-        <input id="nome" type="text" autoComplete="name" placeholder="Seu nome" value={form.nome} onChange={set('nome')} required />
-      </div>
-      <div className="campo">
-        <label htmlFor="tel">Telefone</label>
-        <input id="tel" type="tel" autoComplete="tel" placeholder="(27) 90000 0000" value={form.telefone} onChange={set('telefone')} required />
-      </div>
-      <div className="campo">
-        <label htmlFor="email">E-mail</label>
-        <input id="email" type="email" autoComplete="email" placeholder="voce@email.com" value={form.email} onChange={set('email')} required />
-      </div>
-
-      {/* Consentimento LGPD (obrigatório, desmarcado por padrão) */}
-      <label className="consent">
-        <input type="checkbox" checked={aceito} onChange={(e) => setAceito(e.target.checked)} required />
-        <span>
-          Autorizo o LivingPet a usar meu nome, telefone e e-mail para me enviar o acesso fundador
-          e novidades do lançamento, conforme a{' '}
-          <button type="button" className="link-inline" onClick={abrirPrivacidade}>Política de Privacidade</button>.
-        </span>
-      </label>
-
-      <button className="btn btn-primary btn-bloco" type="submit" disabled={estado === 'enviando' || !aceito}>
-        {estado === 'enviando' ? 'Enviando...' : 'Quero o acesso fundador'}
-      </button>
-      {estado === 'erro' && <p className="form-msg form-erro">Não deu para enviar agora. Tente novamente em instantes.</p>}
-      <p className="form-msg" style={{ color: 'var(--tinta-2)', fontWeight: 600 }}>
-        Sem spam. Você pode revogar o consentimento e pedir a exclusão dos seus dados quando quiser.
-      </p>
-    </form>
-  );
 }
 
 // Modal com a Política de Privacidade (LGPD).
@@ -129,40 +21,36 @@ function Privacidade({ onFechar }) {
           <button className="modal-x" onClick={onFechar} aria-label="Fechar">×</button>
         </div>
         <div className="modal-corpo">
-          <p className="pol-data">Vigência: agosto de 2026. Última atualização: 6 de agosto de 2026.</p>
+          <p className="pol-data">Última atualização: 16 de outubro de 2026.</p>
 
           <h3>1. Quem somos (Controlador)</h3>
           <p>
             O LivingPet é um aplicativo de rotina e cuidado de pets, operado pela Bro Growth.
-            Somos o controlador dos dados coletados neste site. Contato do encarregado de dados:
+            Contato do encarregado de dados:
             <a href="mailto:contato.bromkt@gmail.com"> contato.bromkt@gmail.com</a>.
           </p>
 
           <h3>2. Quais dados coletamos</h3>
           <p>
-            Neste site coletamos apenas os dados que você informa voluntariamente na lista de espera:
-            <b> nome, telefone e e-mail</b>. Não usamos cookies de rastreamento, não fazemos perfilamento
-            e não coletamos dados de forma automática além do necessário para o funcionamento da página.
+            Este site <b>não coleta dados pessoais</b>: não tem formulário de cadastro, não usa cookies de
+            rastreamento e não faz perfilamento. Você navega de forma anônima.
           </p>
 
-          <h3>3. Para que usamos</h3>
+          <h3>3. O aplicativo</h3>
           <p>
-            Usamos seus dados exclusivamente para liberar o acesso fundador no lançamento (11 de agosto de 2026)
-            e enviar comunicações sobre o LivingPet. A base legal é o seu <b>consentimento</b>
-            (art. 7, I, da Lei nº 13.709/2018, a LGPD).
+            Quando o app LivingPet estiver disponível, o tratamento dos dados dentro dele seguirá a política
+            de privacidade própria do aplicativo, apresentada antes do cadastro.
           </p>
 
-          <h3>4. Compartilhamento</h3>
+          <h3>4. Contato</h3>
           <p>
-            Não vendemos nem compartilhamos seus dados com terceiros para fins de marketing. Os dados são
-            armazenados de forma segura na infraestrutura do Supabase, usada apenas como operadora para
-            hospedagem do banco de dados.
+            Dúvidas sobre privacidade podem ser enviadas para o e-mail acima.
           </p>
 
-          <h3>5. Por quanto tempo guardamos</h3>
+          <h3>5. Hospedagem</h3>
           <p>
-            Mantemos seus dados até o cumprimento da finalidade (envio do acesso e comunicações do lançamento)
-            ou até você solicitar a exclusão ou revogar o consentimento, o que ocorrer primeiro.
+            O site é hospedado no GitHub Pages, que pode registrar dados técnicos de acesso (como endereço IP)
+            para segurança e funcionamento do serviço.
           </p>
 
           <h3>6. Seus direitos (LGPD)</h3>
@@ -216,9 +104,8 @@ export default function App() {
             <a href="#recursos">Recursos</a>
             <a href="#app">O app</a>
             <a href="#como">Como funciona</a>
-            <a href="#lista">Lista de espera</a>
-          </nav>
-          <a className="btn btn-primary" href="#lista">Entrar na lista</a>
+            </nav>
+          <a className="btn btn-primary" href="#embreve">Em breve</a>
         </div>
       </header>
 
@@ -227,18 +114,16 @@ export default function App() {
         <video className="hero-video" src={A + 'img/comercial.webm'} autoPlay muted loop playsInline />
         <div className="hero-scrim" />
         <div className="container hero-in">
-          <span className="selo">Estreia 11 de agosto · Acesso fundador</span>
+          <span className="selo">Em breve na App Store e no Google Play</span>
           <h1>Tudo para a <span className="grifo">rotina</span> e a saúde do seu pet, todo dia</h1>
           <p className="lead">
             Rotina diária personalizada por IA, carteira de vacinação, foto do dia e compartilhamento
             com o veterinário. Cão ou gato, tudo em um só app.
           </p>
           <div className="hero-acoes">
-            <a className="btn btn-primary" href="#lista">Entrar na lista de espera</a>
-            <a className="btn btn-glass" href="#app">Ver o app</a>
+            <a className="btn btn-primary" href="#app">Ver o app</a>
+            <a className="btn btn-glass" href="#recursos">Conhecer os recursos</a>
           </div>
-          <Countdown />
-          <p className="hero-data">Lançamento em 11 de agosto de 2026, às 16h.</p>
         </div>
       </section>
 
@@ -347,24 +232,19 @@ export default function App() {
         </div>
       </section>
 
-      {/* ===== Lista de espera ===== */}
-      <section className="secao wait" id="lista">
+      {/* ===== Em breve ===== */}
+      <section className="secao wait" id="embreve">
         <div className="container">
-          <div className="wait-card glass">
-            <div>
-              <span className="eyebrow">Acesso fundador</span>
-              <h2>Entre na lista e estreie com a gente</h2>
-              <p className="sub">
-                No lançamento, dia 11 de agosto, quem está na lista recebe o acesso fundador
-                do LivingPet em primeira mão.
-              </p>
-              <ul className="wait-beneficios">
-                <li><span className="ck"><IconCheck width={16} height={16} /></span> Acesso antecipado no dia da estreia</li>
-                <li><span className="ck"><IconCheck width={16} height={16} /></span> Selo de tutor fundador no app</li>
-                <li><span className="ck"><IconCheck width={16} height={16} /></span> Prioridade no suporte e nas novidades</li>
-              </ul>
+          <div className="wait-card glass embreve-card">
+            <span className="eyebrow">Em breve</span>
+            <h2>O LivingPet está chegando</h2>
+            <p className="sub">
+              Em breve disponível para iPhone e Android. Siga a gente para saber em primeira mão.
+            </p>
+            <div className="lojas">
+              <div className="loja"><small>Em breve na</small><b>App Store</b></div>
+              <div className="loja"><small>Em breve no</small><b>Google Play</b></div>
             </div>
-            <Waitlist abrirPrivacidade={() => setPriv(true)} />
           </div>
         </div>
       </section>
@@ -388,8 +268,7 @@ export default function App() {
             <div>
               <h5>Suporte</h5>
               <ul>
-                <li><a href="#lista">Lista de espera</a></li>
-                <li><a href="mailto:contato.bromkt@gmail.com">Fale conosco</a></li>
+                                <li><a href="mailto:contato.bromkt@gmail.com">Fale conosco</a></li>
                 <li><button type="button" className="link-footer" onClick={() => setPriv(true)}>Privacidade (LGPD)</button></li>
               </ul>
             </div>
@@ -397,8 +276,6 @@ export default function App() {
               <h5>Contato</h5>
               <ul>
                 <li><a href="mailto:contato.bromkt@gmail.com">contato.bromkt@gmail.com</a></li>
-                <li><a href="#lista">Instagram</a></li>
-                <li><a href="#lista">WhatsApp</a></li>
               </ul>
             </div>
           </div>
