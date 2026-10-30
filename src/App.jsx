@@ -16,7 +16,7 @@ function Sticker({ img, lado, topo, tam = 170, giro = 0, atraso = 0 }) {
 }
 
 function Logo({ className }) {
-  return <img className={'logo-img ' + (className || '')} src={A + 'img/logo.png'} alt="LivingPet" />;
+  return <img className={'logo-img ' + (className || '')} src={A + 'img/logo-trim.png'} alt="LivingPet" />;
 }
 
 // Modal com a Política de Privacidade (LGPD).
