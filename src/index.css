@@ -336,3 +336,22 @@ img { max-width: 100%; display: block; }
   display: flex; flex-direction: column; align-items: center; border: 2px solid rgba(92,255,92,.35); }
 .loja small { font: 700 13px Nunito, sans-serif; opacity: .75; }
 .loja b { font: 800 22px Poppins, sans-serif; }
+
+/* ===== Stickers de pets nas laterais ===== */
+html, body { overflow-x: clip; }
+.sticker {
+  position: absolute; z-index: 1; height: auto; pointer-events: none; image-rendering: pixelated;
+  filter: drop-shadow(0 10px 14px rgba(11, 59, 42, .18));
+  animation: sticker-flutua 5s ease-in-out infinite;
+}
+.sticker-esq { left: max(8px, calc(50% - 720px)); }
+.sticker-dir { right: max(8px, calc(50% - 720px)); }
+.hero .sticker { z-index: 2; }
+.secao > .container { position: relative; z-index: 2; }
+@keyframes sticker-flutua {
+  0%, 100% { transform: translateY(0) rotate(var(--giro)); }
+  50% { transform: translateY(-10px) rotate(calc(var(--giro) * -1)); }
+}
+@media (max-width: 1100px) { .sticker { opacity: .9; transform-origin: center; width: 120px !important; } .sticker-esq { left: -22px; } .sticker-dir { right: -22px; } }
+@media (max-width: 640px) { .sticker { width: 86px !important; } }
+@media (prefers-reduced-motion: reduce) { .sticker { animation: none; transform: rotate(var(--giro)); } }

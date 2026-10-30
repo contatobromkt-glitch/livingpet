@@ -8,8 +8,8 @@ redirects = []
 
 [build]
 publish = "C:\\Users\\Igor Tolentino\\OneDrive\\Documentos\\livingpet-site\\dist"
-publishOrigin = "ui"
-commandOrigin = "ui"
+publishOrigin = "config"
+commandOrigin = "config"
 command = "npm run build"
 
 [build.environment]

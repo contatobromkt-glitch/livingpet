@@ -7,6 +7,14 @@ import { PhoneMenu, PhoneAtividades, PhoneFicha } from './components/Phones.jsx'
 
 const A = import.meta.env.BASE_URL; // base do GitHub Pages
 
+// Sticker pixel art de pet decorando a lateral de uma seção
+function Sticker({ img, lado, topo, tam = 170, giro = 0, atraso = 0 }) {
+  return (
+    <img className={'sticker sticker-' + lado} src={A + 'img/stickers/' + img + '.webp'} alt="" aria-hidden="true"
+      loading="lazy" style={{ top: topo, width: tam, '--giro': giro + 'deg', animationDelay: atraso + 's' }} />
+  );
+}
+
 function Logo({ className }) {
   return <img className={'logo-img ' + (className || '')} src={A + 'img/logo.png'} alt="LivingPet" />;
 }
@@ -111,6 +119,7 @@ export default function App() {
 
       {/* ===== Hero em vídeo ===== */}
       <section className="hero">
+        <Sticker img="caramelo" lado="dir" topo="62%" tam={210} giro={-6} />
         <video className="hero-video" src={A + 'img/comercial.webm'} autoPlay muted loop playsInline />
         <div className="hero-scrim" />
         <div className="container hero-in">
@@ -129,6 +138,8 @@ export default function App() {
 
       {/* ===== Recursos ===== */}
       <section className="secao" id="recursos">
+        <Sticker img="beagle-comendo" lado="esq" topo="40px" tam={180} giro={-4} />
+        <Sticker img="gato" lado="dir" topo="55%" tam={150} giro={6} atraso={1.2} />
         <div className="container">
           <div className="centro">
             <span className="eyebrow">Recursos</span>
@@ -154,6 +165,7 @@ export default function App() {
 
       {/* ===== Confiança ===== */}
       <section className="secao">
+        <Sticker img="gato-espreguicando" lado="esq" topo="68%" tam={190} giro={3} atraso={.6} />
         <div className="container confianca-grid">
           <div>
             <span className="eyebrow">Confiança</span>
@@ -187,6 +199,8 @@ export default function App() {
 
       {/* ===== App showcase (mockups 3D) ===== */}
       <section className="secao" id="app">
+        <Sticker img="gato-brincando" lado="dir" topo="50px" tam={180} giro={5} atraso={.3} />
+        <Sticker img="pincher" lado="esq" topo="62%" tam={165} giro={-5} atraso={1.5} />
         <div className="container">
           <div className="centro">
             <span className="eyebrow">O app por dentro</span>
@@ -211,6 +225,7 @@ export default function App() {
 
       {/* ===== Como funciona ===== */}
       <section className="secao" id="como">
+        <Sticker img="caramelo-dormindo" lado="dir" topo="58%" tam={200} giro={0} atraso={.9} />
         <div className="container">
           <div className="centro">
             <span className="eyebrow">Como funciona</span>
@@ -234,6 +249,8 @@ export default function App() {
 
       {/* ===== Em breve ===== */}
       <section className="secao wait" id="embreve">
+        <Sticker img="gato-brincando" lado="esq" topo="30%" tam={160} giro={-6} atraso={.4} />
+        <Sticker img="caramelo" lado="dir" topo="25%" tam={170} giro={5} atraso={1.1} />
         <div className="container">
           <div className="wait-card glass embreve-card">
             <span className="eyebrow">Em breve</span>
